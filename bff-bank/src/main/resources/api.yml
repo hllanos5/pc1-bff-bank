@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  title: BFF Microservice
+  description: BFF Microservice
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /client:
+    get:
+      tags:
+        - client
+      summary: List all clients from the database
+      description: List all clients from the database
+      operationId: findAllClient
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response'
+        "204":
+          description: No clients found
+        "405":
+          description: Invalid input
+components:
+  schemas:
+    Response:
+      type: object
+      additionalProperties:
+        type: object
+    Account:
+      required:
+        - dni
+        - names
+        - surnames
+        - email
+        - phone
+        - client_type
+        - product_type
+        - account_type
+        - active_type
+        - amount
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        dni:
+          type: string
+          description: DNI
+          minimum: 8
+          maximum: 8
+          pattern: '[0-9]{8}'
+          example: "70000000"
+        names:
+          type: string
+          description: Names
+          pattern: '^(?=.{3,15}$)[A-ZÁÉÍÓÚ][a-zñáéíóú]+(?: [A-ZÁÉÍÓÚ][a-zñáéíóú]+)?$'
+          example: Hans Jonathan
+        surnames:
+          type: string
+          description: Surnames
+          pattern: '^(?=.{3,15}$)[A-ZÁÉÍÓÚ][a-zñáéíóú]+(?: [A-ZÁÉÍÓÚ][a-zñáéíóú]+)?$'
+          example: Llanos Chavez
+        email:
+          type: string
+          description: email
+          pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
+          example: hans.llanos@gmail.com
+        phone:
+          type: string
+          description: phone
+          pattern: '(\+51|51|)[0-9]+'
+          example: "+51940000000"
+        client_type:
+          type: string
+          description: type
+          example: "Personal"
+        product_type:
+          type: string
+          description: type
+          example: "Pasivo" #Pasivo o Activo
+        account_type:
+          type: string
+          description: type
+          example: "Ahorro" #Ahorro, CuentaCorriente, Plazo Fijo
+        active_type:
+          type: string
+          description: type
+          example: "personal"
+        amount:
+          type: double
+          example: 102.20
+        createAt:
+          type: string
+          format: date-time
+          description: Creation date
+          example: "2022-10-27T20:30:00Z"
+          readOnly: true
+  requestBodies:
+    transaction:
+      description: create accoun object that needs to be added to the database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Account'
