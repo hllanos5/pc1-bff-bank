@@ -18,15 +18,9 @@ public class ClientServiceImp implements  ClientService {
 
         WebClient webClient = WebClient.create(endPointClient);
 
-        Mono response = webClient.get()
+        return webClient.get()
                 .uri("/client")
                 .retrieve()
-                .bodyToMono(String.class);
-
-        response.subscribe(
-                body -> System.out.println("Response: " + body),  // Manejo de la respuesta
-                error -> System.err.println("Error: " + error)    // Manejo de errores
-        );
-        return null;
+                .bodyToFlux(ClientDTO.class);
     }
 }
