@@ -6,6 +6,29 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
+  /account:
+    post:
+      tags:
+        - product
+      summary: Add a new product to the database
+      description: Add a new product to the database
+      operationId: createProduct
+      requestBody:
+        description: Create a new product in the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "405":
+          description: Invalid input
   /client:
     get:
       tags:
@@ -49,6 +72,9 @@ components:
         id:
           type: string
           readOnly: true
+        clientId:
+          type: string
+          readOnly: true
         dni:
           type: string
           description: DNI
@@ -76,25 +102,30 @@ components:
           description: phone
           pattern: '(\+51|51|)[0-9]+'
           example: "+51940000000"
-        client_type:
+        clientType:
           type: string
           description: type
           example: "Personal"
-        product_type:
+        productType:
           type: string
           description: type
           example: "Pasivo" #Pasivo o Activo
-        account_type:
+        accountType:
           type: string
           description: type
           example: "Ahorro" #Ahorro, CuentaCorriente, Plazo Fijo
-        active_type:
+        activeType:
           type: string
           description: type
           example: "personal"
         amount:
           type: double
           example: 102.20
+        accountNumber:
+          type: string
+          description: type
+          pattern: "^[0-9]{9,18}$"
+          example: "12345678900"
         createAt:
           type: string
           format: date-time
