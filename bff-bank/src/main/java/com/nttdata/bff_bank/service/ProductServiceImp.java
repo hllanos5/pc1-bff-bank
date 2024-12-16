@@ -14,23 +14,30 @@ public class ProductServiceImp implements  ProductService {
     @Value("${external.api.product}")
     private String endPointProduct;
 
+    private final WebClient.Builder webClientBuilder;
+
+    public ProductServiceImp(WebClient.Builder webClientBuilder) {
+        this.webClientBuilder = webClientBuilder;
+    }
+
     @Override
     public Mono<ProductDTO> findByClientId(String idClient) {
 
-        WebClient webClient = WebClient.create(endPointProduct);
-
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path("/product/client-id/${id}").build(idClient))
+        return this.webClientBuilder
+                .build()
+                .get()
+                .uri(endPointProduct.concat("/product/client-id/${id}"))
                 .retrieve()
                 .bodyToMono(ProductDTO.class);
     }
 
     @Override
     public Mono<ProductDTO> save(ProductDTO product) {
-        WebClient webClient = WebClient.create(endPointProduct);
 
-        return webClient.post()
-                .uri("/product")
+        return this.webClientBuilder
+                .build()
+                .post()
+                .uri(endPointProduct.concat("/product"))
                 .bodyValue(product)
                 .retrieve()
                 .bodyToMono(ProductDTO.class);
